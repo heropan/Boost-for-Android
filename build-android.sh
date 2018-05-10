@@ -142,13 +142,13 @@ BUILD_DIR="./build/"
 
 if [ $CLEAN = yes ] ; then
 	echo "Cleaning: $BUILD_DIR"
-	rm -f -r $PROGDIR/$BUILD_DIR
+	#rm -f -r $PROGDIR/$BUILD_DIR
 	
 	echo "Cleaning: $BOOST_DIR"
-	rm -f -r $PROGDIR/$BOOST_DIR
+	#rm -f -r $PROGDIR/$BOOST_DIR
 	
 	echo "Cleaning: $BOOST_TAR"
-	rm -f $PROGDIR/$BOOST_TAR
+	#rm -f $PROGDIR/$BOOST_TAR
 
 	echo "Cleaning: logs"
 	rm -f -r logs
@@ -165,12 +165,12 @@ fi
 
 if [ -d "$PROGDIR/$BOOST_DIR" ]; then
 	echo "Cleaning: $BOOST_DIR"
-	rm -f -r $PROGDIR/$BOOST_DIR
+	#rm -f -r $PROGDIR/$BOOST_DIR
 fi
 
 if [ -d "$PROGDIR/$BUILD_DIR" ]; then
 	echo "Cleaning: $BUILD_DIR"
-	rm -f -r $PROGDIR/$BUILD_DIR
+	#rm -f -r $PROGDIR/$BUILD_DIR
 fi
 
 
@@ -190,7 +190,7 @@ if [ -z "$AndroidNDKRoot" ] ; then
 else
   # User passed the NDK root as a parameter. Make sure the directory
   # exists and make it an absolute path.
-  if [ ! -f "$AndroidNDKRoot/ndk-build" ]; then
+  if [ ! -f "$AndroidNDKRoot/ndk-build.cmd" ]; then
     dump "ERROR: $AndroidNDKRoot is not a valid NDK root"
     exit 1
   fi
@@ -291,6 +291,11 @@ case "$NDK_RN" in
 		TOOLSET=gcc-androidR8e
 		;;
 	16.*)
+		TOOLCHAIN=${TOOLCHAIN:-llvm}
+		CXXPATH=$AndroidNDKRoot/toolchains/${TOOLCHAIN}/prebuilt/${PlatformOS}-x86_64/bin/clang++
+		TOOLSET=clang
+		;;
+	17.*)
 		TOOLCHAIN=${TOOLCHAIN:-llvm}
 		CXXPATH=$AndroidNDKRoot/toolchains/${TOOLCHAIN}/prebuilt/${PlatformOS}-x86_64/bin/clang++
 		TOOLSET=clang
@@ -514,14 +519,13 @@ echo "Building boost for android for $ARCH"
          threading=multi              \
          --layout=versioned           \
          $WITHOUT_LIBRARIES           \
-         -sICONV_PATH=`pwd`/../libiconv-libicu-android/$ARCH \
-         -sICU_PATH=`pwd`/../libiconv-libicu-android/$ARCH \
-         --build-dir="./../$BUILD_DIR/build/$ARCH" \
-         --prefix="./../$BUILD_DIR/out/$ARCH" \
+         --build-dir="`pwd`/../$BUILD_DIR/build/$ARCH" \
+         --prefix="`pwd`/../$BUILD_DIR/out/$ARCH" \
          $LIBRARIES                   \
          $LIBRARIES_BROKEN            \
          install 2>&1                 \
-         || { dump "ERROR: Failed to build boost for android for $ARCH!" ; rm -rf ./../$BUILD_DIR/out/$ARCH ; exit 1 ; }
+         || { dump "ERROR: Failed to build boost for android for $ARCH!" ; exit 1 ; }
+         #|| { dump "ERROR: Failed to build boost for android for $ARCH!" ; rm -rf ./../$BUILD_DIR/out/$ARCH ; exit 1 ; }
   } | tee -a $PROGDIR/build.log
 
   # PIPESTATUS variable is defined only in Bash, and we are using /bin/sh, which is not Bash on newer Debian/Ubuntu

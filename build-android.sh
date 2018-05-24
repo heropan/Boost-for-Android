@@ -517,7 +517,7 @@ echo "Building boost for android for $ARCH"
          $cxxflags                    \
          link=static                  \
          threading=multi              \
-         --layout=versioned           \
+         --layout=system              \
          $WITHOUT_LIBRARIES           \
          -sICONV_PATH=`pwd`/../libiconv-libicu-android/$ARCH \
          -sICU_PATH=`pwd`/../libiconv-libicu-android/$ARCH \

@@ -344,6 +344,11 @@ do_without_libraries() {
 register_option "--toolchain=<toolchain>" select_toolchain "Select a toolchain. To see available execute ls -l ANDROID_NDK/toolchains."
 select_toolchain() {
 	TOOLCHAIN=$1
+
+	if [ ! -d $ANDROID_NDK/toolchains/$TOOLCHAIN ]; then
+	    echo "ERROR: invalid toolchain $TOOLCHAIN"
+	    exit 1
+	fi
 }
 
 PREFIX=/usr/local
@@ -386,6 +391,16 @@ do_ndk_root() {
 		echo "ERROR: $NDK_ROOT is not a valid NDK root"
 		exit 1
 	fi
+}
+
+NDK_API_LEVEL=
+register_option "--ndk-api-level=<num>" do_ndk_api_level "Select api level. To see available execute ls ANDROID_NDK/platforms/android-<num>."
+do_ndk_api_level() {
+    NDK_API_LEVEL=$1
+    if [ ! -d $ANDROID_NDK/platforms/android-$NDK_API_LEVEL ]; then
+        echo "ERROR: invalid api level $NDK_API_LEVEL"
+        exit 1
+    fi
 }
 
 EXTRACT_DIR=`pwd`
@@ -630,6 +645,7 @@ android_boost_build() {
 		export AndroidNDKRoot=$NDK_ROOT
 		export NO_BZIP2=1
 		export PlatformOS
+		export NDK_API_LEVEL
 
 		LIBRARIES_BROKEN=""
 		if [ "$TOOLSET" = "clang" ]; then

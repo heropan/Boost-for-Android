@@ -9,4 +9,4 @@
 <compileflags>$(AndroidNDKRoot)/sysroot
 <compileflags>-isystem
 <compileflags>$(AndroidNDKRoot)/sysroot/usr/include/mips64el-linux-android
-<compileflags>-D__ANDROID_API__=21
+<compileflags>-D__ANDROID_API__=$(NDK_API_LEVEL)

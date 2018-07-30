@@ -674,6 +674,7 @@ android_boost_build() {
 
 		./bjam -q \
 			-j$NCPU \
+			-d0 \
 			target-os=$TARGET_OS \
 			toolset=$TOOLSET_ARCH \
 			link=static \
@@ -701,6 +702,7 @@ host_boost_build() {
 
 	./bjam -q \
 		-j$NCPU \
+		-d0 \
 		link=static \
 		cflags=-fPIC \
 		cxxflags=-fPIC \
